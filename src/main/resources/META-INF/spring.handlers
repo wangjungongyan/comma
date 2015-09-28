@@ -1,0 +1,5 @@
+http\://www.springframework.org/schema/jms=org.springframework.jms.config.JmsNamespaceHandler
+http\://www.dianping.com/schema/avatar=com.dianping.avatar.cache.spring.AvatarNamespacheHandler
+http\://www.springframework.org/schema/tx=org.springframework.transaction.config.TxNamespaceHandler
+http\://www.springframework.org/schema/aop=org.springframework.aop.config.AopNamespaceHandler
+http\://www.springframework.org/schema/context=org.springframework.context.config.ContextNamespaceHandler

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="sayHello" class="com.vali.comma.SayHelloImpl"></bean>
+
+    <bean id="printHelloWorld" class="com.vali.comma.PrintHelloWorldImpl">
+        <property name="sayHello" ref="sayHello"></property>
+    </bean>
+
+    <bean class="com.vali.comma.CommaServiceRegistry">
+        <property name="services">
+            <map>
+                <entry key="com.vali.comma.PrintHelloWorld/printHelloWorldFromCommaServiceRegistry" value="printHelloWorld"/>
+            </map>
+        </property>
+    </bean>
+
+</beans>
