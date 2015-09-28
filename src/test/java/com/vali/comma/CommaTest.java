@@ -18,8 +18,12 @@ public class CommaTest {
     }
 
     public static void main(String[] args) {
-        init();
-        PrintHelloWorld printHelloWorld = (PrintHelloWorld)applicationContext.getBean("printHelloWorldFromCommaServiceRegistry");
+        String[] path = new String[] {
+                "classpath*:/config/spring/test/appcontext-test.xml" };
+        applicationContext = new ClassPathXmlApplicationContext(path);
+
+        PrintHelloWorld printHelloWorld = (PrintHelloWorld) applicationContext.getBean(
+                "printHelloWorld");
         printHelloWorld.PrintHw();
     }
 }

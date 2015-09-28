@@ -1,6 +1,7 @@
 package com.vali.comma;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.ClassUtils;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -62,6 +63,13 @@ public class Helper {
             }
         }
         return SERVER_IP;
+    }
+
+    public static Class loadClass(ClassLoader classLoader, String className) throws ClassNotFoundException {
+        if (classLoader == null) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+        }
+        return ClassUtils.getClass(classLoader, className);
     }
 
 }

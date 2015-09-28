@@ -2,12 +2,11 @@ package com.vali.comma;
 
 import com.period.server.PeriodServerUtil;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.*;
 import org.springframework.remoting.caucho.HessianServiceExporter;
 
 import java.util.Map;
@@ -15,41 +14,40 @@ import java.util.Map;
 /**
  * Created by vali on 15-8-27.
  */
-public class CommaServiceRegistry implements ApplicationContextAware, InitializingBean {
+public class CommaServiceRegistry implements BeanFactoryAware,
+        ApplicationListener {
 
-    private ApplicationContext applicationContext;
+    private DefaultListableBeanFactory beanFactory;
 
     private Map<String, String> services;
 
-    @Override public void afterPropertiesSet() throws Exception {
-
+    @Override public void onApplicationEvent(ApplicationEvent event) {
         if (services == null || services.size() == 0) {
             return;
         }
 
-        ConfigurableApplicationContext configurableContext = (ConfigurableApplicationContext) applicationContext;
-        DefaultListableBeanFactory listableBeanFactory = (DefaultListableBeanFactory) configurableContext.getBeanFactory();
-
-        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(
-                HessianServiceExporter.class);
+        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
+                .genericBeanDefinition(HessianServiceExporter.class);
 
         for (String key : services.keySet()) {
             //com.dianping.daren.api.service.DarenIdentityTaskService/darenIdentityTaskService_1.0 darenIdentityTaskService
-            if (register2SpringContext(beanDefinitionBuilder, listableBeanFactory, key)) {
+            if (register2SpringContext(beanDefinitionBuilder, key)) {
                 //register2Zk(key);
             }
         }
     }
 
-    private boolean register2SpringContext(BeanDefinitionBuilder beanDefinitionBuilder,
-                                           DefaultListableBeanFactory defaultListableBeanFactory, String key) {
+    private boolean register2SpringContext(BeanDefinitionBuilder beanDefinitionBuilder, String key) {
         String beanRef = services.get(key);
         String serviceInterface = key.split("/")[0];
-        //String beanName = applicationContext.getBean(beanRef).getClass().getName();
         beanDefinitionBuilder.addPropertyReference("service", beanRef);
         beanDefinitionBuilder.addPropertyValue("serviceInterface", serviceInterface);
-        defaultListableBeanFactory.registerBeanDefinition("printHelloWorldFromCommaServiceRegistry", beanDefinitionBuilder.getRawBeanDefinition());
-        Object o = applicationContext.getBean("printHelloWorldFromCommaServiceRegistry");
+
+        String registerBeanName = "/" + key.split("/")[1];
+        beanFactory.registerBeanDefinition(registerBeanName,
+                                           beanDefinitionBuilder.getRawBeanDefinition());
+
+        Object o = beanFactory.getBean(registerBeanName);
         return (o == null) ? false : true;
     }
 
@@ -61,7 +59,8 @@ public class CommaServiceRegistry implements ApplicationContextAware, Initializi
         this.services = services;
     }
 
-    @Override public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = (DefaultListableBeanFactory) beanFactory;
     }
+
 }

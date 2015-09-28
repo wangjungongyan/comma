@@ -6,6 +6,6 @@ package com.vali.comma;
 public class SayHelloImpl implements SayHello {
 
     @Override public void saySth() {
-        System.out.print("saySth.....");
+        System.out.println("saySth.....");
     }
 }
