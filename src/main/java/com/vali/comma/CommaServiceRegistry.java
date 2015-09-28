@@ -6,7 +6,8 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.context.*;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.remoting.caucho.HessianServiceExporter;
 
 import java.util.Map;
@@ -51,6 +52,7 @@ public class CommaServiceRegistry implements BeanFactoryAware,
         return (o == null) ? false : true;
     }
 
+    //TODO
     private boolean register2Zk(String key) {
         return PeriodServerUtil.createEphemeralNode(key, Helper.getServerIP(), "", "alpha");
     }
